@@ -1,0 +1,101 @@
+﻿@using FootballApp.Models;
+    <div class="body-content">
+        <h2>О матчах:</h2>
+        <div style="float: left; margin-left: 20px; margin-top: 20px">
+            @if (User.IsInRole("admin"))
+            {
+                using (Html.BeginForm("AddMatch", "EditMatch", FormMethod.Post))
+                {
+                    <input type="hidden" id="TournamentId" name="TournamentId" value=@Model[0].tournamentId />
+                    <input type="hidden" id="TournamentStageId" name="TournamentStageId" value=@Model[0].tournamentStageId />
+                    <button type="submit" class="btn btn-primary">Добавить матч</button>
+                }
+            }
+        </div>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">Турнир (стадия)</th>
+                    <th scope="col">Матч</th>
+                    <th scope="col">Дата</th>
+                    <th scope="col">Счёт</th>
+                    <th scope="col">Игрок</th>
+                    <th scope="col">Время</th>
+
+                </tr>
+            </thead>
+            <tbody>
+                @for (int j = 0; j < Model.Count; j++)
+                {
+                    int pl = 0;
+                    FootballApp.Models.ExtendedMatch match = Model[j];
+                    int rs = 0;
+                    if (j != Model.Count)
+                    {
+                        foreach (FootballApp.Models.Scores c in match.Scores)
+                        {
+                            if (c.goalsMadeBy1 != null) { rs += c.goalsMadeBy1.Count; }
+                            if (c.goalsMadeBy2 != null) { rs += c.goalsMadeBy2.Count; }
+                        }
+                        rs += match.Scores.Count + 1;
+                    }
+
+                    <tr>
+                        <th rowspan=@rs>@match.tournament (@match.tournamentStage)</th>
+                    </tr>
+                    for (int i = 0; i < match.Scores.Count; i++)
+                    {
+                        FootballApp.Models.Scores c = match.Scores[i];
+
+                        if (match.Scores[i].goalsMadeBy1 != null) { pl = match.Scores[i].goalsMadeBy1.Count + 1; }
+                        if (match.Scores[i].goalsMadeBy2 != null) { pl += match.Scores[i].goalsMadeBy2.Count; }
+
+                        <tr>
+                            <td rowspan=@pl>
+                                <div class="row">
+                                    @Html.ActionLink(c.match, "AboutMatches", new FootballApp.Models.Match { FirstTeamId = c.firstTeamId, SecondTeamId = c.secondTeamId })
+                                </div>
+                                <div class="row">
+                                    @if (User.IsInRole("admin"))
+                                    {
+                                       @Html.ActionLink("Редактировать", "EditMatch", "EditMatch", new FootballApp.Models.Match
+                                       {
+                                           MatchId = c.matchId,
+                                           MatchName = c.match,
+                                           Date = c.date,
+                                           TournamentId = Model[0].tournamentId,
+                                           TournamentStageId = Model[0].tournamentStageId,
+                                           FirstTeamId = c.firstTeamId,
+                                           SecondTeamId = c.secondTeamId
+                                       }, null)
+                                    }
+                                    </div>
+                            </td>
+                            <td rowspan=@pl>@c.date.ToShortDateString()</td>
+                            <td rowspan=@pl>@c.goals</td>
+                        </tr>
+
+                        foreach (FootballApp.Models.ExtendedGoal eg in c.goalsMadeBy1)
+                        {
+                            <tr>
+                                <td>@eg.PlayerName (@eg.Team)</td>
+                                <td>@eg.Time.ToString().Split(' ')[1] (@eg.Period период)</td>
+                            </tr>
+                        }
+                        if (c.goalsMadeBy2 != null)
+                        {
+                            foreach (FootballApp.Models.ExtendedGoal eg in c.goalsMadeBy2)
+                            {
+                                <tr>
+                                    <td>@eg.PlayerName (@eg.Team)</td>
+                                    <td>@eg.Time.ToString().Split(' ')[1] (@eg.Period период)</td>
+                                </tr>
+                                }
+                            }
+
+                        }
+                    }
+
+            </tbody>
+            </table>
+    </div>

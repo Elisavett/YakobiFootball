@@ -1,0 +1,106 @@
+﻿@model FootballApp.Models.AddMatchModel
+@{
+    ViewBag.Title = "AddMatch";
+}
+    <div class="body-content">
+        <div style="float: left;margin: 65px 0 0px 0; width: 5%; height:20px; min-width: 55px">
+            <img src="~/Content/images/ball1.png" height="50" width="50" />
+        </div>
+        <div style="float: left;margin: 65px 0 20px 0; width: 95%">
+            <h2 style="margin: 5px 0 3px 0;">
+                Добавление матча
+            </h2>
+        </div>
+        @using (Html.BeginForm("EditMatch", "EditMatch", FormMethod.Post))
+        {
+            <input type="hidden" class="form-control" id="tournamentId" name="tournamentId" value=@Model.match.TournamentId>
+            <input type="hidden" class="form-control" id="TournamentStageId" name="TournamentStageId" value=@Model.match.TournamentStageId>
+
+            @*<div style="padding: 30px; border: 1px solid black; border-radius: 10px;">*@
+    <div class="row" style="margin-top: 20px">
+
+        <div class="form-group col-lg-2">
+            <label>Турнир:</label>
+            <select required class="form-control" id="tournamentId" name="tournamentId">
+                @foreach (FootballApp.Models.Tournament t in Model.tournaments)
+                {
+                    <option value=1>@t.Name</option>
+                }
+            </select>
+        </div>
+        <div class="form-group col-lg-2">
+            <label>Стадия турнира:</label>
+            <select required class="form-control" id="stageId" name="stageId">
+                @foreach (FootballApp.Models.TournamentStage ts in Model.tournamentStages)
+                {
+                    <option value=@ts.TournamentStageId>@ts.Name</option>
+                }
+            </select>
+        </div>
+        <div class="form-group col-lg-2">
+            <label>Дата</label>
+            <input required type="date" class="form-control" id="Date" name="Date">
+        </div>
+        <div class="form-group col-lg-3">
+            <label>Статус:</label>
+            <select required class="form-control" id="Status" name="Status">
+                <option value="Ожидается">Ожидается</option>
+                <option value="Идет">Идет</option>
+                <option value="Завершен">Завершен</option>
+            </select>
+        </div>
+        <div class="form-group col-lg-1">
+            <input style="margin-top: 25px" type="submit" value="Добавить матч" class="btn btn-primary mb-2" />
+        </div>
+    </div>
+                <div class="row" style="margin-top: 25px">
+                    <div class=" col-lg-4" style="padding: 20px">
+                        <div class="form-group">
+                            <label>1 команда:</label>
+                            <select required class="form-control" id="FirstTeamId" name="FirstTeamId">
+                                @foreach (FootballApp.Models.Team team in Model.teams)
+                                {
+                                    <option value=@team.TeamId>@team.TeamName</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Тренер:</label>
+                            <select required class="form-control" id="FirstTeamTrainerId" name="FirstTeamTrainerId">
+                                @foreach (FootballApp.Models.Trainer tr in Model.trainers)
+                                {
+                                    <option value=@tr.TrainerId>@tr.FullName</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+                    <div style="margin-top: 25px; text-align: center" class="col-lg-3">
+                        <h3> VS </h3>
+                    </div>
+                    <div class=" col-lg-4" style="padding: 20px">
+                        <div class="form-group">
+                            <label>2 команда:</label>
+                            <select required class="form-control" id="SecondTeamId" name="SecondTeamId">
+                                @foreach (FootballApp.Models.Team team in Model.teams)
+                                {
+                                    <option value=@team.TeamId>@team.TeamName</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Тренер:</label>
+                            <select required class="form-control" id="SecondTeamTrainerId" name="SecondTeamTrainerId">
+                                @foreach (FootballApp.Models.Trainer tr in Model.trainers)
+                                {
+                                    <option value=@tr.TrainerId>@tr.FullName</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <input type="hidden" value="1" name="view" />
+                </div>
+                @*</div>*@
+                }
+
+            </div>

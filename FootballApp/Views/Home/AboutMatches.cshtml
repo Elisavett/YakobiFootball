@@ -1,0 +1,149 @@
+﻿@model FootballApp.Models.ExtendedTeam
+    <div class="body-content" style="margin: 0 15% 0 15%">
+        <div style="text-align:center; margin: 65px 0 6px 0;width: 100%">
+            <h4>
+                @Model.date.ToLongDateString()
+            </h4>
+        </div>
+        <div style="text-align:center; margin: 6px 0 6px 0;width: 42%; float: left">
+            <h2 class="col-md-12">
+                @Model.Team1
+            </h2>
+            <h4 class="col-md-12">
+                Тренер: @Model.trainer1.FullName
+            </h4>
+        </div>
+        <div style="        text-align: center;
+        margin: 6px 0 6px 0;
+        width: 16%;
+        float: left">
+            <h2 class="col-md-12">
+                <b>@Model.scores</b>
+            </h2>
+            <h4 class="col-md-12">
+                @Model.status
+            </h4>
+        </div>
+        <div style="text-align: center; margin: 6px 0 6px 0;width: 42%; float: left">
+            <h2 class="col-md-12">
+                @Model.Team2
+            </h2>
+            <h4 class="col-md-12">
+                Тренер: @Model.trainer2.FullName
+            </h4>
+        </div>
+        <div style="text-align:center; margin: 6px 0 6px 0;width: 100%">
+            <h4>
+                Главный судья: @Model.Judge
+            </h4>
+        </div>
+        <div style="margin: 0 10% 0 10%">
+            @if (Model.Goals1.Count != 0 && Model.Goals2.Count != 0)
+            {
+                <div style=" text-align: center;margin: 6px 0 6px 0;width: 100%">
+                    <h2>
+                        Голы
+                    </h2>
+                </div>
+            <table class="greenTable">
+                <thead>
+                    <tr>
+                        <th width="40%">Игрок</th>
+                        <th width="20%">Минута</th>
+                        <th width="40%">Игрок</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                    @foreach (FootballApp.Models.ExtendedGoal goal1 in Model.Goals1)
+                    {
+                        <tr>
+                            <td>@goal1.PlayerName</td>
+                            <td>@(goal1.Time * goal1.Period)</td>
+                            <td></td>
+                        </tr>
+
+                    }
+                    @foreach (FootballApp.Models.ExtendedGoal goal2 in Model.Goals2)
+                    {
+                        <tr>
+                            <td></td>
+                            <td>@(goal2.Time * goal2.Period)</td>
+                            <td>@goal2.PlayerName</td>
+
+                        </tr>
+
+                    }
+                </tbody>
+            </table>
+            <div style="text-align:center; margin: 0 6px 0 6px;" class="col-md-12">
+                <h2>
+                    Нарушения
+                </h2>
+            </div>
+            <table class="greenTable">
+                <thead>
+                    <tr>
+                        <th width="40%">Игрок</th>
+                        <th width="20%">Минута</th>
+                        <th width="40%">Игрок</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (FootballApp.Models.ExtendedContravention contr1 in Model.Contraventions1)
+                    {
+                        <tr>
+                            <td>@contr1.PlayerName</td>
+                            <td>@(Convert.ToInt32(contr1.Time) * Convert.ToInt32(contr1.Period))</td>
+                            <td></td>
+                        </tr>
+
+                    }
+                    @foreach (FootballApp.Models.ExtendedContravention contr1 in Model.Contraventions2)
+                    {
+                        <tr>
+                            <td></td>
+                            <td>@(Convert.ToInt32(contr1.Time) * Convert.ToInt32(contr1.Period))</td>
+                            <td>@contr1.PlayerName</td>
+                        </tr>
+
+                    }
+                </tbody>
+            </table>
+            }
+            <div style=" text-align: center; margin: 0 6px 0 6px;" class="col-md-12">
+                <h2>
+                    Составы
+                </h2>
+            </div>
+            <table class="greenTable">
+                <thead>
+                    <tr>
+                        <th width="40%">Игрок</th>
+                        <th width="20%">Позиция</th>
+                        <th width="40%">Игрок</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (FootballApp.Models.ExtendedPlayer contr1 in Model.Players1)
+                    {
+                        string p2Name = "";
+                        foreach (FootballApp.Models.ExtendedPlayer p2 in Model.Players2)
+                        {
+                            if (p2.Name == contr1.Name)
+                            {
+                                p2Name = p2.FullName;
+                                break;
+                            }
+                        }
+                        <tr>
+                            <td>@contr1.FullName</td>
+                            <td>@(contr1.Name)</td>
+                            <td>@p2Name</td>
+                        </tr>
+
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>

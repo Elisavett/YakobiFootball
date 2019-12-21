@@ -1,0 +1,50 @@
+﻿@model FootballApp.Models.User
+
+@{
+    ViewBag.Title = "ShowEditAccountParametrs";
+}
+<div>
+    <h4>Профиль успешно отредактирован</h4>
+    <hr />
+    <dl class="dl-horizontal">
+
+        <dt>
+           <label>Имя</label>
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Email)
+        </dd>
+
+        <dt>
+            <label>Пароль</label>
+        </dt>
+        
+        <dd>
+            <ul class="topmenu nav navbar-nav">
+
+                <li>
+                    <a href="#">
+                        Показать пароль
+                        <i class="fa fa-angle-down"></i>
+                    </a>
+                </li>
+            </ul>
+            <ul class="submenu nav navbar-nav" style="font-size: 14px">
+
+                <li>
+                    @Model.Password
+                </li>
+            </ul>
+        </dd>
+
+        <dt>
+            <label>Баланс</label>
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ballance)
+        </dd>
+
+    </dl>
+</div>

@@ -1,0 +1,76 @@
+﻿
+@if (Request.IsAuthenticated)
+{
+    FootballApp.Models.Context db = new FootballApp.Models.Context();
+    decimal ballance = 0;
+    foreach (FootballApp.Models.User u in db.Users)
+    {
+        if (u.Email == User.Identity.Name)
+        {
+            ballance = u.ballance;
+            break;
+        }
+    }
+    @Html.AntiForgeryToken()
+    using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm", @class = "navbar-right" }))
+    {
+        string href = User.IsInRole("user") ? "/Account/Account" : "#";
+
+    <nav class="one">
+        <ul class="nav navbar-nav" style="font-size: 20px">
+
+            <li>
+                <ul class="topmenu nav navbar-nav">
+
+                    <li>
+                        
+                        <a href="@href ">
+                            @User.Identity.Name
+                            @if (!User.IsInRole("admin"))
+                            {
+                            <span style="font-size: 16px">, баланс: @Math.Round(ballance, 2) рублей</span>
+                            }
+                            <i class="fa fa-angle-down"></i>
+                        </a>
+                </ul>
+                <ul class="submenu nav navbar-nav" style="font-size: 14px">
+
+                    <li>
+                        @Html.ActionLink("Редактировать профиль", "EditAccount", "Account", routeValues: null, htmlAttributes: new { title = "Manage" })
+                    </li>
+                    @if (!User.IsInRole("admin"))
+                    {
+                        <li>
+                            @Html.ActionLink("Пополнить баланс", "AddMoney", "Account", routeValues: null, htmlAttributes: new { title = "Manage" })
+                        </li>
+                        <li>
+                            @Html.ActionLink("Получить выигрыш", "RemoveMoney", "Account", routeValues: null, htmlAttributes: new { title = "Manage" })
+                        </li>
+                    }
+                    @if (User.IsInRole("admin"))
+                    {
+                        <li>
+                            @Html.ActionLink("Консоль администратора", "Console", "Account", routeValues: null, htmlAttributes: new { title = "Manage" })
+                        </li>
+                    }
+                    <li><a href="javascript:document.getElementById('logoutForm').submit()">Выйти</a></li>
+
+                </ul>
+            </li>
+            @*@if (User.IsInRole("admin"))
+            {
+                <li>@Html.ActionLink("Редачить", "Login", "Account", routeValues: null, htmlAttributes: new { id = "loginLink" })</li>
+            }*@
+
+
+        </ul>
+    </nav>
+            }
+            }
+            else
+            {
+            <ul class="nav navbar-nav navbar-right">
+                <li>@Html.ActionLink("Зарегестрироваться", "Register", "Account", routeValues: null, htmlAttributes: new { id = "registerLink" })</li>
+                <li>@Html.ActionLink("Выполнить вход", "Login", "Account", routeValues: null, htmlAttributes: new { id = "loginLink" })</li>
+            </ul>
+            }

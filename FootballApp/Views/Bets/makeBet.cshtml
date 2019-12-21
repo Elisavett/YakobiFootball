@@ -1,0 +1,69 @@
+﻿@model Tuple<FootballApp.Models.Bet, FootballApp.Models.User>
+
+@{
+    ViewBag.Title = "makeBet";
+}
+
+@using (Html.BeginForm())
+{
+    if (Model.Item2.ballance == 0) { <h2 style="margin: 80px 0 3px 0;">
+    Пополните баланс, чтобы сделать ставку
+</h2>}
+    else
+    {
+        string teamName = Model.Item1.Team.TeamName == null ? "ничья" : Model.Item1.Team.TeamName;
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal" style="margin:80px 0 60% 0">
+        <div style="float: left;
+        margin: 50px 10px 0px 16%;
+        width: 4%;
+        height: 20px;">
+            <img src="~/Content/images/ball1.png" style="width: 100%"/>
+        </div>
+        <div style="float: left;margin: 50px 0 40px 0; width: 72%">
+            <h2 style="margin: 5px 0 3px 0;">
+                Ставка
+            </h2>
+        </div>
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <div class="form-group">
+            @Html.Label("Матч", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-5" style="font-size: 19px">
+                @Model.Item1.Match.MatchName
+            </div>
+        </div>
+        <input type="hidden" id="Match" name="Match" value=@Model.Item1.Match.MatchId>
+
+        <div class="form-group">
+            @Html.Label("Команда", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-5" style="font-size: 19px">
+                @teamName
+            </div>
+        </div>
+        <input type="hidden" id="Team" name="Team" value=@Model.Item1.Team.TeamId>
+        <div class="form-group">
+            @Html.Label("Коэффициент", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-5" style="font-size: 19px">
+                @Model.Item1.Coefficient
+            </div>
+        </div>
+        <input type="hidden" id="Coefficient" name="Coefficient" value=@Model.Item1.Coefficient>
+        <div class="form-group">
+            @Html.Label("Cумма", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-4">
+                <input min="0" max="@Model.Item2.ballance" type="number" class="form-control" name="Amount" id="Amount" />
+                @Html.ValidationMessageFor(model => model.Item1.Amount, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-1">
+                <input type="submit" value="Принять" class="btn btn-default" />
+            </div>
+            <div class="col-md-4">
+                <input type="submit" value="Отмена" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+    }
+}

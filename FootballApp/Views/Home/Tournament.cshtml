@@ -1,0 +1,23 @@
+﻿
+    <div class="body-content">
+        <h3>Турниры:</h3>
+        <table class="table table-striped table-reflow">
+            
+            <tbody>
+                @foreach (FootballApp.Models.ShowTournaments b in Model)
+                {
+                    <tr>
+                        <th colspan="4">@b.Name</th>
+                    
+                        @foreach (FootballApp.Models.TournamentStageDTO c in b.Stages)
+                        {
+                            <td>
+                                @Html.ActionLink(c.Name, "Matches", new { TournamentId = b.TournamentId, TournamentStageId = c.TournamentStageId })
+                            </td>
+                        }
+                    </tr>
+                }
+            </tbody>
+        </table>
+      
+    </div>

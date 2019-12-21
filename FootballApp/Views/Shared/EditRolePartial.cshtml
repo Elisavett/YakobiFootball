@@ -1,0 +1,8 @@
+﻿@model List<FootballApp.Models.Role>
+
+<div class="form-group">
+    <label class="control-label col-md-2">Выберете роль</label>
+    <div class="col-md-9">
+        @Html.DropDownList("Id",new SelectList (Model, "Id", "Name"))
+    </div>
+</div>

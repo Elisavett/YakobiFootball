@@ -1,0 +1,120 @@
+﻿@model List<FootballApp.Models.Bet>
+
+@{
+    ViewBag.Title = "Account";
+    int sumWin = 0;
+    int sumLose = 0;
+    int sumInGame = 0;
+}
+    <div style="margin: 80px 20% 0 20%">
+        <div style="float: left;margin: 50px 0 0px 0; width: 5%; height:20px; min-width: 55px">
+            <img src="~/Content/images/ball1.png" height="50" width="50" />
+        </div>
+        <div style="float: left;margin: 50px 0 40px 0; width: 90%">
+            <h2 style="margin: 5px 0 3px 0;">
+                История ставок
+            </h2>
+        </div>
+        <hr />
+        <h4 style="margin-bottom: 20px">Ставки: выигрыш</h4>
+        <table class="greenTable">
+            <thead>
+                <tr>
+                    <th>Название матча</th>
+                    <th>Команда</th>
+                    <th>Коэффициент</th>
+                    <th>Сумма</th>
+                    <th>Выигрыш</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @foreach (FootballApp.Models.Bet bet in Model)
+                {
+                    if (bet.satus == true)
+                    {
+                        sumWin++;
+                        <tr>
+                            <td>@bet.Match.MatchName</td>
+                            <td>@bet.Team.TeamName</td>
+                            <td>@bet.Coefficient</td>
+                            <td>@Math.Round(bet.Amount, 2)</td>
+                            <td>+@Math.Round(Convert.ToDouble(bet.Amount) * bet.Coefficient, 2) руб.</td>
+                        </tr>
+                    }
+                }
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan=5 style="text-align: right; font-size: 16px">Всего выиграно: @sumWin</td>
+                </tr>
+            </tfoot>
+        </table>
+        <hr />
+        <h4 style="margin-bottom: 20px">Ставки: проигрыш</h4>
+
+        <table class="greenTable">
+            <thead>
+                <tr>
+                    <th>Название матча</th>
+                    <th>Команда</th>
+                    <th>Коэффициент</th>
+                    <th>Сумма</th>
+                    <th>Проигрыш</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (FootballApp.Models.Bet bet in Model)
+                {
+                    if (bet.satus == false)
+                    {
+                        sumLose++;
+                        <tr>
+                            <td>@bet.Match.MatchName</td>
+                            <td>@bet.Team.TeamName</td>
+                            <td>@bet.Coefficient</td>
+                            <td>@Math.Round(bet.Amount, 2)</td>
+                            <td>-@Math.Round(Convert.ToDouble(bet.Amount) * bet.Coefficient, 2) руб.</td>
+                        </tr>
+                    }
+                }
+            </tbody>
+            <tfoot style="font-size: 16px">
+                <tr>
+                    <td colspan=5 style="text-align: right; font-size: 16px">Всего проиграно: @sumLose</td>
+                </tr>
+            </tfoot>
+        </table>
+        <h4 style="margin-bottom: 20px">Ставки: в игре</h4>
+
+        <table class="greenTable">
+            <thead>
+                <tr>
+                    <th>Название матча</th>
+                    <th>Команда</th>
+                    <th>Коэффициент</th>
+                    <th>Сумма</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (FootballApp.Models.Bet bet in Model)
+                {
+                    if (bet.satus == null)
+                    {
+                        sumInGame++;
+                        <tr>
+                            <td>@bet.Match.MatchName</td>
+                            <td>@bet.Team.TeamName</td>
+                            <td>@bet.Coefficient</td>
+                            <td>@Math.Round(bet.Amount, 2)</td>
+                        </tr>
+                    }
+                }
+            </tbody>
+            <tfoot style="font-size: 16px">
+                <tr>
+                    <td colspan=5 style="text-align: right; font-size: 16px">Всего в игре: @sumInGame</td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>

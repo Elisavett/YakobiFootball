@@ -1,0 +1,106 @@
+﻿
+@{
+    ViewBag.Title = "ShowPlayers";
+}
+    <div class="body-content">
+        <div style="float: left;margin: 70px 0 0px 0; width: 5%; height:20px; min-width: 55px">
+            <img src="~/Content/images/ball1.png" height="50" width="50" />
+        </div>
+        <div style="float: left;margin: 70px 0 20px 0; width: 90%">
+            <h2 style="margin: 5px 0 3px 0;">
+                Рейтинг игроков
+            </h2>
+        </div>
+        <div style="margin: 20px 0 10px 0; width: 30%" class="col-lg-4">
+            <label>Количество отображаемых строк:</label>
+            <select class="form-control" name="state" id="maxRows">
+                <option value="5">5</option>
+                <option value="10">10</option>
+                <option value="100">Показать все</option>
+            </select>
+        </div>
+        @if (User.IsInRole("admin"))
+        {
+            <div class="form-group col-lg-offset-2 col-lg-8" style="margin: 37px 0 10px 0">
+                <input style="margin-top: 7px" onclick="window.location='/EditPlayer/Create';" formmethod="get" type="submit" value="Добавить игрока" class="btn btn-success mb-2" />
+            </div>
+        }
+        <div style="float: left; margin-left: 30px; margin-top: 20px">
+        </div>
+        <table id="table" class="greenTable">
+            <thead>
+                <tr>
+                    <th scope="col">Имя</th>
+                    <th scope="col">Позиция</th>
+                    <th scope="col">Команда</th>
+                    <th scope="col">Количество голов</th>
+                    <th scope="col">Количество нарушений</th>
+                    @if (User.IsInRole("admin"))
+                    {
+                        <td>
+
+                        </td>
+                    }
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (FootballApp.Models.PlayerCharacteristics ph in Model)
+                {
+                <tr>
+                    <td>@ph.playerName</td>
+                    <td>@ph.position</td>
+                    <td>@ph.teamName</td>
+                    <td>@ph.goals</td>
+                    <td><span style="color: red; -webkit-text-stroke: 0.3px black;">@ph.redCardsNum</span> / <span style="color: gold; -webkit-text-stroke: 0.3px black;">@ph.yellowCardsNum</span></td>
+                    @if (User.IsInRole("admin"))
+                    {
+                        <td width="15">
+                            @Html.ActionLink(" ", "Edit", "EditPlayer", new FootballApp.Models.Player
+                           {
+                               FullName = ph.playerName
+                           }, new { @class = "glyphicon glyphicon-pencil", @style = "margin: 0 4px 0 4px; " })
+
+                        </td>
+                    }
+                </tr>
+
+                }
+
+            </tbody>
+        </table>
+        <div class="pagination-container">
+            <nav>
+                <ul class="pagination">
+
+                    <li data-page="prev">
+
+                        <span> < <span class="sr-only">(current)</span></span>
+
+                    </li>
+                    <li data-page="next" id="prev">
+
+                        <span> > <span class="sr-only">(current)</span></span>
+
+                    </li>
+
+                </ul>
+
+            </nav>
+
+        </div>
+    </div>
+    <script>
+    getPagination('#table');
+
+    $(function() {
+  // Just to append id number for each row
+  $('table tr:eq(0)').prepend('<th> № </th>');
+
+  var id = 0;
+
+  $('table tr:gt(0)').each(function() {
+    id++;
+    $(this).prepend('<td>' + id + '</td>');
+  });
+});
+    </script>

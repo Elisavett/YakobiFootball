@@ -1,0 +1,178 @@
+﻿
+<style>
+    .trhoover tr:hover{
+        background-color: LightGreen
+    }
+</style>
+    <div class="body-content">
+        <div style="float: left;margin: 70px 0 0px 0; width: 5%; height:20px; min-width: 55px">
+            <img src="~/Content/images/ball1.png" height="50" width="50" />
+        </div>
+        <div style="float: left;margin: 70px 0 20px 0; width: 90%">
+            <h2 style="margin: 5px 0 3px 0;">
+                Распиcание матчей
+            </h2>
+        </div>
+        <div style="margin: 20px 0 10px 0; width: 30%" class="col-lg-4">
+
+            <label>Количество отображаемых строк:</label>
+            <select class="form-control" name="state" id="maxRows">
+                <option value="5">5</option>
+                <option value="10">10</option>
+                <option value="100">Показать все</option>
+            </select>
+        </div>
+        @if (User.IsInRole("admin"))
+        {
+            <div class="form-group col-lg-offset-2 col-lg-8" style="margin: 37px 0 10px 0">
+                <input style="margin-top: 7px" onclick="window.location='/EditMatch/AddMatch';" formmethod="get" type="submit" value="Добавить матч" class="btn btn-success mb-2" />
+            </div>
+        }
+        <div style="margin: 5px 0 5px 0; width: 20%">
+
+            <label>@ViewBag.res</label>
+        </div>
+        <table id="table" class="greenTable">
+            <thead>
+                <tr>
+                    <th>Турнир, стадия</th>
+                    <th>Дата</th>
+                    <th>Название матча</th>
+                    <th>Счёт</th>
+                    <th>Статус</th>
+                    @if (User.IsInRole("user"))
+                    {
+                        <th>1</th>
+                        <th>X</th>
+                        <th>2</th>
+                    }
+                    @if (User.IsInRole("admin"))
+                    {
+                        <th></th>
+                    }
+                </tr>
+            </thead>
+
+            <tbody class="trhoover">
+                @foreach (FootballApp.Models.Schedule schedule in Model)
+                {
+                    FootballApp.Models.Match m = new FootballApp.Models.Match();
+                    string goals = schedule.goals;
+                    string matchIdGoals = schedule.matchId.ToString();
+                    if (schedule.goals == "-") { matchIdGoals += "0"; }
+                    else
+                    if (goals[0] != '0' && goals[2] != '0')
+                    { matchIdGoals += "0" + goals[0] + "0" + goals[2] + "0"; }
+                    else if (goals[0] == '0' && goals[2] != '0') { matchIdGoals += "0" + goals[2] + "2"; }
+                    else if (goals[2] == '0' && goals[0] != '0') { matchIdGoals += "0" + goals[0] + "1"; }
+                    else { matchIdGoals += "3"; }
+                    using (FootballApp.Models.Context db = new FootballApp.Models.Context())
+                    {
+
+                        foreach (FootballApp.Models.Match match in db.Matches)
+                        {
+                            if (match.MatchId == schedule.matchId)
+                            {
+                                m = match;
+                                break;
+                            }
+                        }
+                    }
+                    <tr onclick="rowClicked(@Convert.ToInt32(matchIdGoals))">
+                        <td>@schedule.tournament (@schedule.tournamentStage)</td>
+                        <td>@schedule.Date.ToLongDateString()</td>
+                        <td>@schedule.matchName</td>
+                        <td>@schedule.goals</td>
+                        <td>@schedule.Status</td>
+                        @if (User.IsInRole("user"))
+                        {
+                            string ftc = schedule.FirstTeamCoef.ToString();
+                            string stc = schedule.SecondTeamCoef.ToString();
+                            string dc = schedule.DrawCoef.ToString();
+                            if (schedule.FirstTeamCoef == 0)
+                            {
+                                <td width="5">
+                                    -
+                                </td>
+                                <td width="5">
+                                    -
+                                </td>
+                                <td width="5">
+                                    -
+                                </td>
+                            }
+                            else
+                            {
+                                <td width="5">
+                                    @Html.ActionLink(ftc, "makeBet", "Bets",
+                      new { TeamId = m.FirstTeamId, MatchId = m.MatchId },
+                      new { @style = "float: left; margin-left: 5px;  margin-right: 3px" })
+                                </td>
+                                <td width="5">
+                                    @Html.ActionLink(dc, "makeBet", "Bets",
+                                        new { TeamId = 0, MatchId = m.MatchId }, new { @style = "float: left; margin-left: 3px;  margin-right: 3px" })
+                                </td>
+                                <td width="5">
+                                    @Html.ActionLink(stc, "makeBet", "Bets",
+                      new { TeamId = m.SecondTeamId, MatchId = m.MatchId },
+                      new { @style = "float: left; margin-left: 5px;  margin-right: 3px" })
+                                </td>
+                            }
+                        }
+                        @if (User.IsInRole("admin"))
+                        {
+                            <td width="20">
+                                @Html.ActionLink(" ", "EditMatch", "EditMatch", new FootballApp.Models.Match
+                           {
+                               MatchId = m.MatchId,
+                               MatchName = m.MatchName,
+                               Date = m.Date,
+                               TournamentId = m.TournamentId,
+                               TournamentStageId = m.TournamentStageId,
+                               FirstTeamId = m.FirstTeamId,
+                               SecondTeamId = m.SecondTeamId,
+                               Status = m.Status
+                           }, new { @class = "glyphicon glyphicon-pencil", @style = "margin: 0 4px 0 4px; " })
+
+                            </td>
+                        }
+                    </tr>
+
+                }
+            </tbody>
+
+        </table>
+        <div class="pagination-container">
+            <nav>
+                <ul class="pagination">
+
+                    <li data-page="prev">
+
+                        <span> < <span class="sr-only">(current)</span></span>
+
+                    </li>
+                    <li data-page="next" id="prev">
+                        <span> > <span class="sr-only">(current)</span></span>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+    <script>
+        getPagination('#table');
+
+        $(function () {
+            $('table tr:eq(0)').prepend('<th> № </th>');
+
+            var id = 0;
+
+            $('table tr:gt(0)').each(function () {
+                id++;
+                $(this).prepend('<td>' + id + '</td>');
+            });
+        });
+        function rowClicked(matchId) {
+            location.href = 'AboutMatch?matchIdScores=' + matchId;
+        }
+    </script>
+</body>

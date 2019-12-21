@@ -1,0 +1,315 @@
+﻿@model FootballApp.Models.AddMatchModel
+@{
+    ViewBag.Title = "AddMatch";
+}
+    <div class="body-content" style="margin: 62px 0 0 0;">
+        <div style="float: left;margin: 10px 0 0 2%; width: 5%; height:20px; min-width: 55px">
+            <img src="~/Content/images/ball1.png" height="50" width="50" />
+        </div>
+        <div style="float: left;margin: 10px 0 30px 0; width: 93%">
+            <h2 style="margin: 5px 0 3px 0;">
+                Редактирование матча для: @Model.tournament, @Model.tournamentStage
+            </h2>
+        </div>
+        @using (Html.BeginForm("AddNewMatch", "EditMatch", FormMethod.Get))
+        {
+            <input type="hidden" class="form-control" id="TournamentId" name="TournamentId" value=@Model.match.TournamentId>
+            <input type="hidden" class="form-control" id="TournamentStageId" name="TournamentStageId" value=@Model.match.TournamentStageId>
+            <input type="hidden" class="form-control" id="TournamentStageId" name="view" value="3">
+            @*<div style="padding: 30px; border: 1px solid black; border-radius: 10px;">*@
+    <div class="row" style="margin-top: 20px">
+        <div class="form-group col-lg-3">
+            <label>Название матча:</label>
+            <input type="text" class="form-control" id="MatchName" name="MatchName" value=@Model.match.MatchName>
+        </div>
+        <div class="form-group col-lg-3">
+            <label>Дата:</label>
+            <input type="date" class="form-control" id="Date" name="Date" value=@Model.match.Date.ToString("yyyy-MM-dd")>
+        </div>
+        <div class="form-group col-lg-3">
+            <label>Статус:</label>
+        <select class="form-control" name="Status">
+            @for (int i = 0; i < 3; i++)
+            {
+                string isSelected = Model.statuses[i] == Model.match.Status ? "selected" : "";
+                <option @isSelected value="@Model.statuses[i]">@Model.statuses[i]</option>
+            }
+        </select></div>
+        <div class="form-group col-lg-2">
+            <input style="margin-top: 25px" formaction="EditMatch" formmethod="get" type="submit" value="Редактировать" class="btn btn-primary mb-2" />
+        </div>
+        <div class="form-group col-lg-1">
+            <input style="margin-top: 25px" formaction="DeleteMatch" formmethod="get" type="submit" value="Удалить" class="btn btn-primary mb-2" />
+        </div>
+    </div>
+                <div class="row" style="margin-top: 25px">
+                    <div class=" col-lg-3" style="height: 470px; border: 1px solid grey;border-radius: 10px; padding: 20px">
+                        <div class="form-group">
+                            <label>1 команда:</label>
+                            <input type="hidden" name="FirstTeamId" value=@Model.match.FirstTeamId>
+                            <input type="hidden" name="SecondTeamId" value=@Model.match.SecondTeamId>
+                            <select disabled class="form-control" id="FirstTeamId">
+                                @foreach (FootballApp.Models.Team team in Model.teams)
+                                {
+                                    string sel = "";
+                                    if (Model.FirstTeamId == team.TeamId) { sel = "selected"; }
+                                    <option @sel value=@team.TeamId>@team.TeamName</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="row">
+                            <div class="form-group col-lg-4" style="padding-top: 7%">
+                                <label for="exampleInputName2">Игроки:</label>
+                            </div>
+                            <div class="form-group col-lg-offset-2 col-lg-3">
+                                <input style="margin-top: 7px" formaction="Add1Player" formmethod="get" type="submit" value="+" class="btn btn-success mb-2" />
+                            </div>
+                            <div class="form-group col-lg-3">
+                                <input onclick="checkSelected(event, 'firstTeamPlayerId')"style="margin-top: 7px" formaction="Delete1Player" formmethod="get" type="submit" value="-" class="btn btn-primary mb-2" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <select multiple class="form-control" name="firstTeamPlayerId" id="firstTeamPlayerId" size="7">
+                                @if (Model.PlayersInFirstTeam != null)
+                                {
+                                    foreach (FootballApp.Models.ExtendedPlayerInTeam pg in Model.PlayersInFirstTeam)
+                                    {
+                                        string[] name = pg.PlayerName.Split(' ');
+                                        <option value=@pg.PlayerId>
+                                            @name[0] @name[1][0]  - @pg.PositionName
+                                        </option>
+                                    }
+                                }
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Тренер:</label>
+                            <select class="form-control" id="FirstTeamTrainerId" name="FirstTeamTrainerId">
+
+                                @foreach (FootballApp.Models.Trainer tr in Model.trainers)
+                                {
+                                    string sel = "";
+                                    if (Model.FirstTeamTrainerId == tr.TrainerId) { sel = "selected"; }
+                                    <option @sel value=@tr.TrainerId>@tr.FullName</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-lg-2" style="height: 470px; border: 1px solid grey; border-radius: 10px; padding: 20px; margin-left: 10px">
+                        <div class="row">
+                            <div class="form-group col-lg-4" style="padding-top: 7%">
+                                <label for="exampleInputName2">Голы:</label>
+                            </div>
+                            <div class="form-group col-lg-4">
+                                <input onclick="checkSelected(event, 'firstTeamPlayerId')" style="margin-top: 7px" formaction="Add1TeamGoal" formmethod="get" type="submit" value="+" class="btn btn-success mb-2" />
+                            </div>
+                            <div class="form-group col-lg-4">
+                                <input onclick="checkSelected(event, 'GoalId1')" style="margin-top: 7px" formaction="Delete1Goal" formmethod="get" type="submit" value="-" class="btn btn-primary mb-2" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <select multiple class="form-control" size="4" id="GoalId1" name="GoalId1">
+                                @if (Model.FirstTeamPlayersGoals != null)
+                                {
+                                    foreach (FootballApp.Models.PlayerGoal pg in Model.FirstTeamPlayersGoals)
+                                    {
+                                        string[] name = pg.PlayerName.Split(' ');
+                                        <option value=@pg.GoalId>
+                                            @name[0] @name[1][0]
+                                        </option>
+                                    }
+                                }
+                            </select>
+                        </div>
+                        <div class="row">
+                            <div class="form-group col-lg-4" style="padding-top: 7%">
+                                <label for="exampleInputName2">Фолы:</label>
+                            </div>
+                            <div class="form-group col-lg-4">
+                                <input onclick="checkSelected(event, 'firstTeamPlayerId')" style="margin-top: 7px" formaction="Add1TeamFall" formmethod="get" type="submit" value="+" class="btn btn-success mb-2" />
+                            </div>
+                            <div class="form-group col-lg-4">
+                                <input onclick="checkSelected(event, 'FallId1')" style="margin-top: 7px" formaction="Delete1Fall" formmethod="get" type="submit" value="-" class="btn btn-primary mb-2" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <select multiple class="form-control" size="4" id="FallId1" name="FallId1">
+                                @if (Model.FirstTeamPlayersFalls != null)
+                                {
+                                    foreach (FootballApp.Models.PlayerFall pg in Model.FirstTeamPlayersFalls)
+                                    {
+                                        string color = "yellow";
+                                        if (pg.ContraventionId == 1) { color = "red"; }
+                                        string[] name = pg.PlayerName.Split(' ');
+                                        <option style="color: @color" value=@pg.ContraventionsInMatchId>
+                                            @name[0] @name[1][0]
+                                        </option>
+                                    }
+                                }
+
+                            </select>
+                        </div>
+                    </div>
+
+                    <div style="margin-top: 25px; text-align: center" class="col-lg-1">
+                        <h3> VS </h3>
+                    </div>
+                    <div class=" col-lg-3" style="height: 470px; border: 1px solid grey;border-radius: 10px; padding: 20px">
+                        <div class="form-group">
+                            <label>2 команда:</label>
+                            <select disabled class="form-control" id="SecondTeamId">
+                                @foreach (FootballApp.Models.Team team in Model.teams)
+                                {
+                                    string sel = "";
+                                    if (Model.SecondTeamId == team.TeamId) { sel = "selected"; }
+                                    <option @sel value=@team.TeamId>@team.TeamName</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="row">
+                            <div class="form-group col-lg-4" style="padding-top: 7%">
+                                <label for="exampleInputName2">Игроки:</label>
+                            </div>
+                            <div class="form-group col-lg-offset-2 col-lg-3">
+                                <input style="margin-top: 7px" formaction="Add2Player" formmethod="get" type="submit" value="+" class="btn btn-success mb-2" />
+                            </div>
+                            <div class="form-group col-lg-3">
+                                <input onclick="checkSelected(event, 'secondTeamPlayerId')" style="margin-top: 7px" formaction="Delete2Player" formmethod="get" type="submit" value="-" class="btn btn-primary mb-2" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <select multiple class="form-control" id="secondTeamPlayerId" name="secondTeamPlayerId" size="7">
+                                @if (Model.PlayersInSecondTeam != null)
+                                {
+                                    foreach (FootballApp.Models.ExtendedPlayerInTeam pg in Model.PlayersInSecondTeam)
+                                    {
+                                        string[] name = pg.PlayerName.Split(' ');
+                                        <option value=@pg.PlayerId>
+                                            @name[0] @name[1][0] - @pg.PositionName
+                                        </option>
+                                    }
+                                }
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Тренер:</label>
+                            <select class="form-control" id="FirstTeamTrainerId" name="SecondTeamTrainerId">
+                                @foreach (FootballApp.Models.Trainer tr in Model.trainers)
+                                {
+                                    string sel = "";
+                                    if (Model.SecondTeamTrainerId == tr.TrainerId) { sel = "selected"; }
+                                    <option @sel value=@tr.TrainerId>@tr.FullName</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-lg-2" style="height: 470px; border: 1px solid grey; border-radius: 10px; padding: 20px; margin-left: 10px">
+                        <div class="row">
+                            <div class="form-group col-lg-4" style="padding-top: 7%">
+                                <label for="exampleInputName2">Голы:</label>
+                            </div>
+                            <div class="form-group col-lg-4">
+                                <input onclick="checkSelected(event, 'secondTeamPlayerId')" style="margin-top: 7px" formaction="Add2TeamGoal" formmethod="get" type="submit" value="+" class="btn btn-success mb-2" />
+                            </div>
+                            <div class="form-group col-lg-4">
+                                <input onclick="checkSelected(event, 'GoalId2')" style="margin-top: 7px" formaction="Delete2Goal" formmethod="get" type="submit" value="-" class="btn btn-primary mb-2" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            
+                            <select multiple class="form-control" size="4" id="GoalId2" name="GoalId2">
+                                @if (Model.SecondTeamPlayersGoals != null)
+                                {
+                                    foreach (FootballApp.Models.PlayerGoal pg in Model.SecondTeamPlayersGoals)
+                                    {
+                                        string[] name = pg.PlayerName.Split(' ');
+                                        <option value=@pg.GoalId>
+                                            @name[0] @name[1][0]
+                                        </option>
+                                    }
+                                }
+                            </select>
+                            <input type="hidden" class="form-control" id="MatchId" name="MatchId" value=@Model.match.MatchId>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="form-group col-lg-4" style="padding-top: 7%">
+                                <label for="exampleInputName2">Фолы:</label>
+                            </div>
+                            <div class="form-group col-lg-4">
+                                <input onclick="checkSelected(event, 'secondTeamPlayerId')" style="margin-top: 7px;" formaction="Add2TeamFall" formmethod="get" type="submit" value="+" class="btn btn-success mb-2" />
+                            </div>
+                            <div class="form-group col-lg-4">
+                                <input onclick="checkSelected(event, 'FallId2')" style="margin-top: 7px" formaction="Delete2Fall" formmethod="get" type="submit" value="-" class="btn btn-primary mb-2" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            
+                            <select multiple class="form-control" size="4" id="FallId2" name="FallId2">
+                                @if (Model.SecondTeamPlayersFalls != null)
+                                {
+                                    foreach (FootballApp.Models.PlayerFall pg in Model.SecondTeamPlayersFalls)
+                                    {
+                                        string color = "yellow";
+                                        if (pg.ContraventionId == 1) { color = "red"; }
+                                        string[] name = pg.PlayerName.Split(' ');
+                                        <option style="color: @color" value=@pg.ContraventionsInMatchId>
+                                            @name[0] @name[1][0]
+                                        </option>
+                                    }
+                                }
+
+                            </select>
+                        </div>
+                        <input type="hidden" class="form-control" id="TeamId1" name="TeamId1" value=@Model.match.FirstTeamId>
+                        <input type="hidden" class="form-control" id="TeamId2" name="TeamId2" value=@Model.match.SecondTeamId>
+
+                    </div>
+                </div>
+            @*</div>*@
+
+        }
+        @*<form id="form1">
+            <div class="row" style="padding: 30px; border: 1px solid black; border-radius: 10px; margin:20px">
+                <div class="form-group col-lg-2">
+                    <input style="margin-top: 25px" form="form1" formaction="AddPlayerIn1Team" formmethod="get" type="submit" value="Добавить в 1" class="btn btn-success mb-2" />
+                </div>
+                <div class="form-group col-lg-4">
+                    <label>Игроки:</label>
+                    <select class="form-control" id="PlayerId" name="PlayerId">
+                        @foreach (FootballApp.Models.Player player in Model.players)
+                        {
+                            <option value=@player.PlayerId>@player.FullName</option>
+                        }
+                    </select>
+                </div>
+                <div class="form-group col-lg-3">
+                    <label>Позиции:</label>
+                    <select class="form-control" id="PositionId" name="PositionId">
+                        @foreach (FootballApp.Models.PlayerPosition position in Model.positions)
+                        {
+                            <option value=@position.PlayerPositionId>@position.Name</option>
+                        }
+                    </select>
+                </div>
+                <div class="form-group col-lg-2">
+                    <input style="margin-top: 25px" form="form1" formaction="AddPlayerIn2Team" formmethod="get" type="submit" value="Добавить в 2" class="btn btn-success mb-2" />
+                </div>
+                <div class="form-group col-lg-1">
+                    <input style="margin-top: 25px" formaction="AddNewPlayer" formmethod="get" type="submit" value="+" class="btn btn-success mb-2" />
+                </div>
+            </div>*@
+            @*<input type="hidden" class="form-control" id="TeamId1" name="TeamId1" value=@Model.match.FirstTeamId>
+            <input type="hidden" class="form-control" id="TeamId2" name="TeamId2" value=@Model.match.SecondTeamId>
+
+        </form>*@
+
+    </div>
+<script type="text/javascript">
+    function checkSelected(event, id) {
+        if (document.getElementById(id).options.selectedIndex == -1) {
+            event.preventDefault();
+            alert("Выберете элемент в списке!");
+        }
+}
+</script>

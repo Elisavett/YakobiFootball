@@ -1,0 +1,47 @@
+﻿@model FootballApp.Models.RegisterModel
+@{
+    ViewBag.Title = "EditAccount";
+}
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal" style="margin:80px 0 60% 0">
+        <div style="        float: left;
+        margin: 50px 10px 0px 16%;
+        width: 4%;
+        height: 20px;">
+            <img src="~/Content/images/ball1.png" style="width: 100%" />
+        </div>
+        <div style="float: left;margin: 50px 0 40px 0; width: 72%">
+            <h2 style="margin: 5px 0 3px 0;">
+                Редактирование профиля
+            </h2>
+        </div>
+        @Html.HiddenFor(model => model.UserId)
+        <div class="form-group" id="UserName">
+            <label class="control-label col-md-2">Имя</label>
+            <div class="col-md-4">
+                @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control" } })
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">Пароль</label>
+            <div class="col-md-4">
+                @Ajax.ActionLink("Изменить пароль", "EditUserName", new AjaxOptions { UpdateTargetId = "EditPassword" })
+            </div>
+
+        </div>
+        <div class="form-group" id="EditPassword">
+        </div>
+        <div class="col-md-offset-2 col-md-4" style="margin-bottom: 20px">
+            @ViewBag.isChanged
+        </div>
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-8">
+                <input type="submit" value="Принять" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}
+
