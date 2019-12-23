@@ -3431,6 +3431,11 @@
     <Content Include="Views\Account\AddMoney.cshtml" />
     <Content Include="Views\Account\RemoveMoney.cshtml" />
     <Content Include="Views\Account\EditRole.cshtml" />
+    <Content Include="Views\Coefficients\Create.cshtml" />
+    <Content Include="Views\Coefficients\Delete.cshtml" />
+    <Content Include="Views\Coefficients\Details.cshtml" />
+    <Content Include="Views\Coefficients\Edit.cshtml" />
+    <Content Include="Views\Coefficients\Index.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

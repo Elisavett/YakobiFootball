@@ -13,15 +13,15 @@
         </div>
         @using (Html.BeginForm("EditMatch", "EditMatch", FormMethod.Post))
         {
-            <input type="hidden" class="form-control" id="tournamentId" name="tournamentId" value=@Model.match.TournamentId>
-            <input type="hidden" class="form-control" id="TournamentStageId" name="TournamentStageId" value=@Model.match.TournamentStageId>
+            @*<input type="hidden" class="form-control" id="TournamentId" name="TournamentId" value=@Model.match.TournamentId>
+            <input type="hidden" class="form-control" id="TournamentStageId" name="TournamentStageId" value=@Model.match.TournamentStageId>*@
 
             @*<div style="padding: 30px; border: 1px solid black; border-radius: 10px;">*@
     <div class="row" style="margin-top: 20px">
 
         <div class="form-group col-lg-2">
             <label>Турнир:</label>
-            <select required class="form-control" id="tournamentId" name="tournamentId">
+            <select required class="form-control" id="TournamentId" name="TournamentId">
                 @foreach (FootballApp.Models.Tournament t in Model.tournaments)
                 {
                     <option value=1>@t.Name</option>
@@ -30,7 +30,7 @@
         </div>
         <div class="form-group col-lg-2">
             <label>Стадия турнира:</label>
-            <select required class="form-control" id="stageId" name="stageId">
+            <select required class="form-control" id="TournamentStageId" name="TournamentStageId">
                 @foreach (FootballApp.Models.TournamentStage ts in Model.tournamentStages)
                 {
                     <option value=@ts.TournamentStageId>@ts.Name</option>

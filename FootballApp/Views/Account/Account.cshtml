@@ -102,12 +102,21 @@
                     if (bet.satus == null)
                     {
                         sumInGame++;
-                        <tr>
-                            <td>@bet.Match.MatchName</td>
-                            <td>@bet.Team.TeamName</td>
-                            <td>@bet.Coefficient</td>
-                            <td>@Math.Round(bet.Amount, 2)</td>
-                        </tr>
+                <tr>
+                    <td>@bet.Match.MatchName</td>
+                    @if (bet.Team != null)
+                    {
+                        <td>@bet.Team.TeamName</td>
+;
+                    }
+                    else
+                    {
+                        <td>ничья</td>
+                    }
+
+                    <td>@bet.Coefficient</td>
+                    <td>@Math.Round(bet.Amount, 2)</td>
+                </tr>
                     }
                 }
             </tbody>

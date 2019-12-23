@@ -106,7 +106,7 @@ namespace FootballApp.Controllers
             
             return RedirectToAction("Index", "Home");
         }
-            public ActionResult EditMatch(Match m, int? FirstTeamTrainerId, int? SecondTeamTrainerId, int? tournamentId, int? stageId,int? view)
+            public ActionResult EditMatch(Match m, int? FirstTeamTrainerId, int? SecondTeamTrainerId,int? view)
             {
             
             if(view==3)
@@ -129,31 +129,41 @@ namespace FootballApp.Controllers
                 {
                     using (Context db = new Context())
                     {
-                        if (db.Bets.FirstOrDefault(b => b.Match.MatchId == m.MatchId).satus == null)
+                        if (db.Bets.FirstOrDefault(b => b.Match.MatchId == m.MatchId) != null)
                         {
-
-                            int winerId = 0;
-                            if (match.FirstTeamPlayersGoals.Count > match.SecondTeamPlayersGoals.Count)
-                                winerId = mat.FirstTeamId;
-                            else if (match.FirstTeamPlayersGoals.Count < match.SecondTeamPlayersGoals.Count)
-                                winerId = mat.SecondTeamId;
-
-                            var winerbets = db.Bets.Where(b => b.Match.MatchId == mat.MatchId && b.Team.TeamId == winerId);
-                            var looserbets = db.Bets.Where(b => b.Match.MatchId == mat.MatchId && b.Team.TeamId != winerId);
-                            foreach (Bet bet in winerbets)
+                            if (db.Bets.FirstOrDefault(b => b.Match.MatchId == m.MatchId).satus == null)
                             {
-                                using(Context DB = new Context())
+                                int winerId = 0;
+                                if (match.FirstTeamPlayersGoals.Count > match.SecondTeamPlayersGoals.Count)
+                                    winerId = mat.FirstTeamId;
+                                else if (match.FirstTeamPlayersGoals.Count < match.SecondTeamPlayersGoals.Count)
+                                    winerId = mat.SecondTeamId;
+
+                                var winerbets = db.Bets.Where(b => b.Match.MatchId == mat.MatchId && b.Team.TeamId == winerId);
+                                var looserbets = db.Bets.Where(b => b.Match.MatchId == mat.MatchId && b.Team.TeamId != winerId);
+                                foreach (Bet bet in winerbets)
                                 {
-                                    bet.User = DB.Bets.Where(bb => bb.Id == bet.Id).Select(u => u.User).Single();
-                                    Bet b = DB.Bets.Where(bb => bb.Id == bet.Id).Select(bb=>bb).Single();
-                                    b.satus = true;
-                                    User us = DB.Users.Where(u => u.Id == bet.User.Id).FirstOrDefault();
-                                    us.ballance += bet.Amount * Convert.ToDecimal(bet.Coefficient);
-                                    DB.SaveChanges();
+                                    using (Context DB = new Context())
+                                    {
+                                        bet.User = DB.Bets.Where(bb => bb.Id == bet.Id).Select(u => u.User).Single();
+                                        Bet b = DB.Bets.Where(bb => bb.Id == bet.Id).Select(bb => bb).Single();
+                                        b.satus = true;
+                                        User us = DB.Users.Where(u => u.Id == bet.User.Id).FirstOrDefault();
+                                        us.ballance += bet.Amount * Convert.ToDecimal(bet.Coefficient);
+                                        DB.SaveChanges();
+                                    }
+
                                 }
-                                
+                                foreach (Bet bet in looserbets) {
+                                    using (Context DB = new Context())
+                                    {
+                                        bet.User = DB.Bets.Where(bb => bb.Id == bet.Id).Select(u => u.User).Single();
+                                        Bet b = DB.Bets.Where(bb => bb.Id == bet.Id).Select(bb => bb).Single();
+                                        b.satus = false; 
+                                        DB.SaveChanges();
+                                    }
+                                }
                             }
-                            foreach (Bet bet in looserbets) { bet.satus = false; db.SaveChanges(); }
                         }
                     }
                 }
@@ -170,8 +180,6 @@ namespace FootballApp.Controllers
                     db.SaveChanges();
                     m.FirstTeamId = tm1.TeamInMatchId;
                     m.SecondTeamId = tm2.TeamInMatchId;
-                    m.TournamentId = Convert.ToInt32(tournamentId);
-                    m.TournamentStageId = Convert.ToInt32(stageId);
                     string firstTeamName = (from t in db.Teams
                                             join tm in db.TeamInMatches on t.TeamId equals tm.TeamId
                                             where tm.TeamInMatchId == m.FirstTeamId
