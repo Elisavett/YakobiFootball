@@ -167,6 +167,7 @@ namespace FootballApp.Controllers
                         }
                     }
                 }
+                return RedirectToAction("Index", "Home");
             }
             if (m.MatchId == 0)
             {

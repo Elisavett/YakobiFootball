@@ -534,6 +534,8 @@ namespace FootballApp.Controllers
             string goals = "";
             matchIdScores = matchIdScores.Remove(0, matchIdScores.Split('0')[0].Length);
             string[] goalsSplit = matchIdScores.Split('0');
+            if(matchIdScores == "") goals = "0:0";
+            else
             if (matchIdScores[matchIdScores.Length - 1] == '0')
             {
                 if (matchIdScores.Length == 1)
@@ -555,7 +557,6 @@ namespace FootballApp.Controllers
             {
                 goals = "0:" + goalsSplit[1][0];
             }
-            else goals = "0:0";
             using (Context db = new Context())
             {
                 Match m = new Match();

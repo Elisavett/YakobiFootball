@@ -34,13 +34,21 @@
                     if (bet.satus == true)
                     {
                         sumWin++;
-                        <tr>
-                            <td>@bet.Match.MatchName</td>
-                            <td>@bet.Team.TeamName</td>
-                            <td>@bet.Coefficient</td>
-                            <td>@Math.Round(bet.Amount, 2)</td>
-                            <td>+@Math.Round(Convert.ToDouble(bet.Amount) * bet.Coefficient, 2) руб.</td>
-                        </tr>
+                <tr>
+                    <td>@bet.Match.MatchName</td>
+                    @if (bet.Team != null)
+                    {
+                        <td>@bet.Team.TeamName</td>
+                        ;
+                    }
+                    else
+                    {
+                        <td>ничья</td>
+                    }
+                    <td>@bet.Coefficient</td>
+                    <td>@Math.Round(bet.Amount, 2)</td>
+                    <td>+@Math.Round(Convert.ToDouble(bet.Amount) * bet.Coefficient, 2) руб.</td>
+                </tr>
                     }
                 }
             </tbody>
@@ -69,13 +77,21 @@
                     if (bet.satus == false)
                     {
                         sumLose++;
-                        <tr>
-                            <td>@bet.Match.MatchName</td>
-                            <td>@bet.Team.TeamName</td>
-                            <td>@bet.Coefficient</td>
-                            <td>@Math.Round(bet.Amount, 2)</td>
-                            <td>-@Math.Round(Convert.ToDouble(bet.Amount) * bet.Coefficient, 2) руб.</td>
-                        </tr>
+                <tr>
+                    <td>@bet.Match.MatchName</td>
+                    @if (bet.Team != null)
+                    {
+                        <td>@bet.Team.TeamName</td>
+                        ;
+                    }
+                    else
+                    {
+                        <td>ничья</td>
+                    }
+                    <td>@bet.Coefficient</td>
+                    <td>@Math.Round(bet.Amount, 2)</td>
+                    <td>-@Math.Round(Convert.ToDouble(bet.Amount) * bet.Coefficient, 2) руб.</td>
+                </tr>
                     }
                 }
             </tbody>

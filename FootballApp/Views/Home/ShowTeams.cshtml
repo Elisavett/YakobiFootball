@@ -36,23 +36,28 @@
                 </tr>
             </thead>
             <tbody>
+                @{string prevTeam = ""; }
                 @foreach (FootballApp.Models.TeamTrainer tt in Model)
                 {
-                    <tr>
-                        <td>@tt.teamName</td>
-                        <td>@tt.trainerName</td>
-                        <td>@tt.bestPlayer (@tt.PlayerGoalsNum голов, @tt.PlayerContrNum нарушений)</td>
-                        @if (User.IsInRole("admin"))
-                        {
-                            <td width="15">
-                                @Html.ActionLink(" ", "Edit", "EditTeam", new FootballApp.Models.Team
-                               {
-                                   TeamName = tt.teamName
-                               }, new { @class = "glyphicon glyphicon-pencil", @style = "margin: 0 4px 0 4px; " })
+                    if (prevTeam != tt.teamName)
+                    {
+                <tr>
+                    <td>@tt.teamName</td>
+                    <td>@tt.trainerName</td>
+                    <td>@tt.bestPlayer (@tt.PlayerGoalsNum голов, @tt.PlayerContrNum нарушений)</td>
+                    @if (User.IsInRole("admin"))
+                    {
+                        <td width="15">
+                            @Html.ActionLink(" ", "Edit", "EditTeam", new FootballApp.Models.Team
+                       {
+                           TeamName = tt.teamName
+                       }, new { @class = "glyphicon glyphicon-pencil", @style = "margin: 0 4px 0 4px; " })
 
-                            </td>
-                        }
-                    </tr>
+                        </td>
+                    }
+                </tr>
+                    }
+                    prevTeam = tt.teamName;
                 }
 
             </tbody>
